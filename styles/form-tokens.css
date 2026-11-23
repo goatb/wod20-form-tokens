@@ -1,0 +1,90 @@
+.wft-config .wft-hint,
+.wft-defaults .wft-hint {
+  font-size: 0.85em;
+  color: #555;
+  margin: 0 0 6px 0;
+}
+
+.wft-config table,
+.wft-defaults table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.wft-config th,
+.wft-defaults th {
+  text-align: left;
+  font-size: 0.85em;
+}
+
+.wft-config td,
+.wft-defaults td {
+  vertical-align: middle;
+  padding: 2px 3px;
+}
+
+.wft-config .wft-form-name {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.wft-config .wft-form-name .wft-current {
+  display: block;
+  font-weight: normal;
+  font-size: 0.8em;
+  color: #2e7d32;
+}
+
+.wft-config .wft-path {
+  display: flex;
+  gap: 2px;
+}
+
+.wft-config .wft-path input {
+  flex: 1;
+  min-width: 0;
+}
+
+.wft-config .wft-path button.file-picker {
+  flex: 0 0 26px;
+  line-height: 20px;
+}
+
+.wft-config input.wft-num,
+.wft-defaults input.wft-num {
+  width: 44px;
+  text-align: center;
+}
+
+.wft-config .wft-preview {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border: 1px solid #999;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.wft-config .wft-preview.wft-empty {
+  visibility: hidden;
+}
+
+.wft-config button.wft-capture {
+  white-space: nowrap;
+  line-height: 20px;
+  font-size: 0.85em;
+}
+
+.wft-config .wft-note {
+  font-size: 0.85em;
+  font-style: italic;
+  margin: 4px 0;
+}
+
+.wft-config footer,
+.wft-defaults footer {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}

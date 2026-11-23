@@ -1,0 +1,27 @@
+<form autocomplete="off">
+  <p class="wft-hint">{{localize "WFT.Defaults.Hint"}}</p>
+  <table>
+    <thead>
+      <tr>
+        <th>{{localize "WFT.Form"}}</th>
+        <th>{{localize "WFT.Width"}}</th>
+        <th>{{localize "WFT.Height"}}</th>
+        <th>{{localize "WFT.Scale"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each forms}}
+      <tr>
+        <td>{{label}}</td>
+        <td><input type="number" class="wft-num" step="any" min="0" name="forms.{{key}}.width" value="{{width}}" /></td>
+        <td><input type="number" class="wft-num" step="any" min="0" name="forms.{{key}}.height" value="{{height}}" /></td>
+        <td><input type="number" class="wft-num" step="any" min="0" name="forms.{{key}}.scale" value="{{scale}}" /></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <footer>
+    <button type="submit"><i class="fas fa-save"></i> {{localize "WFT.Save"}}</button>
+    <button type="button" class="wft-reset"><i class="fas fa-undo"></i> {{localize "WFT.Defaults.Reset"}}</button>
+  </footer>
+</form>

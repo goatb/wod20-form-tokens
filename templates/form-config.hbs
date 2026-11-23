@@ -1,0 +1,72 @@
+<form autocomplete="off">
+  <p class="wft-hint">{{localize "WFT.ConfigHint"}}</p>
+  {{#if sharedNote}}<p class="wft-note">{{sharedNote}}</p>{{/if}}
+
+  <div class="form-group">
+    <label>
+      <input type="checkbox" name="useDefaults" {{checked useDefaults}} />
+      {{localize "WFT.UseDefaults"}}
+    </label>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>{{localize "WFT.Form"}}</th>
+        <th>{{localize "WFT.TokenImg"}}</th>
+        <th></th>
+        <th>{{localize "WFT.PortraitImg"}}</th>
+        <th></th>
+        <th>{{localize "WFT.Width"}}</th>
+        <th>{{localize "WFT.Height"}}</th>
+        <th>{{localize "WFT.Scale"}}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each forms}}
+      <tr data-form="{{key}}">
+        <td class="wft-form-name">
+          {{label}}
+          {{#if isCurrent}}<span class="wft-current">({{localize "WFT.Current"}})</span>{{/if}}
+        </td>
+
+        <td>
+          <div class="wft-path">
+            <input type="text" class="wft-img" name="forms.{{key}}.tokenImg" value="{{tokenImg}}" />
+            <button type="button" class="file-picker" data-type="imagevideo" data-target="forms.{{key}}.tokenImg" tabindex="-1">
+              <i class="fas fa-file-import fa-fw"></i>
+            </button>
+          </div>
+        </td>
+        <td><img class="wft-preview {{#unless tokenImg}}wft-empty{{/unless}}" src="{{tokenImg}}" /></td>
+
+        <td>
+          <div class="wft-path">
+            <input type="text" class="wft-img" name="forms.{{key}}.portraitImg" value="{{portraitImg}}" />
+            <button type="button" class="file-picker" data-type="image" data-target="forms.{{key}}.portraitImg" tabindex="-1">
+              <i class="fas fa-file-import fa-fw"></i>
+            </button>
+          </div>
+        </td>
+        <td><img class="wft-preview {{#unless portraitImg}}wft-empty{{/unless}}" src="{{portraitImg}}" /></td>
+
+        <td><input type="number" class="wft-num" step="any" min="0" name="forms.{{key}}.width" value="{{width}}" placeholder="{{phWidth}}" /></td>
+        <td><input type="number" class="wft-num" step="any" min="0" name="forms.{{key}}.height" value="{{height}}" placeholder="{{phHeight}}" /></td>
+        <td><input type="number" class="wft-num" step="any" min="0" name="forms.{{key}}.scale" value="{{scale}}" placeholder="{{phScale}}" /></td>
+
+        <td>
+          <button type="button" class="wft-capture" data-form="{{key}}" title="{{localize 'WFT.CaptureHint'}}">
+            <i class="fas fa-camera"></i> {{localize "WFT.Capture"}}
+          </button>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <footer>
+    <button type="submit"><i class="fas fa-save"></i> {{localize "WFT.Save"}}</button>
+    <button type="button" class="wft-apply"><i class="fas fa-paw"></i> {{localize "WFT.ApplyNow"}}</button>
+  </footer>
+</form>
