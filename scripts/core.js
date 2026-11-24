@@ -287,10 +287,10 @@ export async function onSocketMessage(data) {
  * flip the isactive flags and set isupdated=false so the system recalculates.
  * The updateActor hook then swaps the token appearance.
  */
-export async function setForm(actor, form) {
+export async function setForm(actor, form, extraUpdate = {}) {
   if (!isShifter(actor) || !FORM_KEYS.includes(form)) return false;
   if (!actor.system.shapes?.[form]) return false;
-  const update = { "system.settings.isupdated": false };
+  const update = { ...extraUpdate, "system.settings.isupdated": false };
   for (const k of FORM_KEYS) {
     if (actor.system.shapes[k]) update[`system.shapes.${k}.isactive`] = k === form;
   }
@@ -328,6 +328,15 @@ export function shiftDestination(actor, target, successes, required, { partial =
     }
   }
   return null;
+}
+
+/** Whether this character uses Rage (Changing Breeds such as Ananasi have hasrage = false). */
+export function hasRage(actor) {
+  return !!actor?.system?.settings?.hasrage && !!actor?.system?.advantages?.rage;
+}
+
+export function getTemporaryRage(actor) {
+  return Math.max(0, Number(actor?.system?.advantages?.rage?.temporary) || 0);
 }
 
 /** Predict the active form after `changes` are applied (used in preUpdateActor). */

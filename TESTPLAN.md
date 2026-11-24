@@ -21,6 +21,10 @@
 | 12b | Partial, zero successes | Roll and get 0 successes. | No change. The dialog stays open. |
 | 12c | Partial off | Turn off **Partial successes shift partway** and repeat 12. | No change on 1 success. Successes add up across rolls until 4. |
 | 12d | Partial, Changing Breed | Corax in Homid, target Corvid (4 needed), 1 success, then a new roll with 2 successes. | 1 success: no change (Corax has no Glabro). 2 successes: Crinos. |
+| 12e | Spend Rage | Werewolf with 3 temporary Rage in Homid. Open Shape Change, pick Crinos, tick **Spend 1 Rage**, click Roll. | No dice roll. Shifts straight to Crinos, Rage drops to 2, chat says "spends 1 Rage and shifts instantly", the dialog closes, tokens swap. |
+| 12f | Spend Rage, none left | Same, with 0 temporary Rage. | The checkbox is greyed out and Roll rolls normally. |
+| 12g | Spend Rage, no target / no Rage trait | Tick the box without picking a form and click Roll. Then open the dialog on an Ananasi. | First: warning "Pick a form…", nothing spent. Ananasi: no checkbox. |
+| 12h | Checkbox survives re-render | Tick the box, then change the difficulty or the bonus field. | The box stays ticked. |
 | 13 | Shape Change roll, ask / off | Set the setting to **Ask** and repeat 11, then set it to **Off** and repeat 11. | Ask: a confirm dialog appears, and No keeps the current form. Off: the system's original behaviour, with no form change. |
 | 14 | Changing Breed | Make a Changing Breed with breed Corax and open Form Tokens. Then switch forms on the sheet. | The dialog shows only Homid, Crinos and Corvid. The tokens swap. |
 | 15 | System form effects | Switch forms on a Werewolf token. | No `form_*` status effects appear (the system has these disabled in 4.2.12) and there are no console errors. |

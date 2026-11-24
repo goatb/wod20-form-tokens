@@ -45,6 +45,11 @@
   "WFT.Roll.Announce": "{name} shifts into <strong>{form}</strong>.",
   "WFT.Roll.ConfirmPartial": "<p>{name} rolled {got} of {need} successes toward {target}. Shift partway into <strong>{form}</strong>?</p>",
   "WFT.Roll.AnnouncePartial": "{name} shifts partway into <strong>{form}</strong> ({got} of {need} successes toward {target}).",
+  "WFT.Rage.Checkbox": "Spend 1 Rage to shift instantly (no roll) — Rage: {rage}",
+  "WFT.Rage.NoTarget": "Pick a form to shift into first.",
+  "WFT.Rage.SameForm": "Already in that form.",
+  "WFT.Rage.NotEnough": "Not enough Rage to shift instantly.",
+  "WFT.Rage.Announce": "{name} spends 1 Rage and shifts instantly into <strong>{form}</strong> (Rage left: {rage}).",
   "WFT.Settings.PartialShift.Name": "Partial successes shift partway",
   "WFT.Settings.PartialShift.Hint": "Each success on a Shape Change roll moves one form toward the target (Homid, Glabro, Crinos, Hispo, Lupus). If off, successes add up across rolls until the full number is reached (the system's default).",
 

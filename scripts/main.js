@@ -5,8 +5,12 @@
 import {
   MODULE_ID, SOCKET, FORM_KEYS, DEFAULT_SIZES,
   getSetting, log, isShifter, getActiveForm, getFormLabel, resolveFormConfig,
-  buildActorChanges, predictForm, syncAppearance, setForm, onSocketMessage, shiftDestination
+  buildActorChanges, predictForm, syncAppearance, setForm, onSocketMessage, shiftDestination,
+  hasRage, getTemporaryRage
 } from "./core.js";
+
+/** Key on the dialog's data object remembering the "spend Rage" checkbox across re-renders. */
+const RAGE_KEY = `${MODULE_ID}SpendRage`;
 import { FormTokensConfig, DefaultSizesConfig } from "./apps.js";
 
 /* -------------------------------------------- */
@@ -172,7 +176,18 @@ Hooks.on("renderDialogShapeChange", (app, html) => {
   const button = $html.find(".actionbutton");
   if (!button.length) return;
 
+  injectRageOption(app, $html);
+
   button.off("click").on("click", async (event) => {
+    if (app.object?.[RAGE_KEY] && hasRage(app.actor)) {
+      event.preventDefault(); // no form submit / re-render: we close the dialog ourselves
+      try {
+        await rageShift(app);
+      } catch (err) {
+        console.error(`${MODULE_ID} | rage shift failed`, err);
+      }
+      return;
+    }
     await app._shiftform(event);
     try {
       await completeShapeChange(app);
@@ -181,6 +196,73 @@ Hooks.on("renderDialogShapeChange", (app, html) => {
     }
   });
 });
+
+/** Add a "Spend 1 Rage to shift instantly" checkbox above the dialog's Roll/Close buttons. */
+function injectRageOption(app, $html) {
+  const actor = app.actor;
+  if (!hasRage(actor) || !app.object) return;
+  const rage = getTemporaryRage(actor);
+  const checked = app.object[RAGE_KEY] ? "checked" : "";
+  const label = game.i18n.format("WFT.Rage.Checkbox", { rage });
+  const area = $(`
+    <div class="dialog-area wft-rage-area">
+      <label class="wft-rage">
+        <input type="checkbox" class="wft-spend-rage" ${checked} ${rage < 1 ? "disabled" : ""} />
+        ${label}
+      </label>
+    </div>`);
+
+  // Keep the state on the dialog's object and don't let the system's submit-on-change re-render.
+  area.find("input").on("change", (ev) => {
+    ev.stopPropagation();
+    app.object[RAGE_KEY] = ev.currentTarget.checked;
+  });
+  if (rage < 1) app.object[RAGE_KEY] = false;
+
+  const buttons = $html.find(".actionbutton").closest("div");
+  if (buttons.length) buttons.before(area);
+  else $html.find("form").append(area);
+  try { app.setPosition({ height: "auto" }); } catch (e) { /* not positioned yet */ }
+}
+
+/** Spend 1 temporary Rage and change straight into the selected form, no roll. */
+async function rageShift(app) {
+  const actor = app.actor;
+  const target = app.object?.selectedShape;
+  if (!isShifter(actor)) return;
+  if (!FORM_KEYS.includes(target)) {
+    ui.notifications.warn(game.i18n.localize("WFT.Rage.NoTarget"));
+    return;
+  }
+  if (getActiveForm(actor) === target) {
+    ui.notifications.warn(game.i18n.localize("WFT.Rage.SameForm"));
+    return;
+  }
+  const rage = getTemporaryRage(actor);
+  if (rage < 1) {
+    ui.notifications.warn(game.i18n.localize("WFT.Rage.NotEnough"));
+    return;
+  }
+  if (app[`_${MODULE_ID}Busy`]) return;
+
+  app[`_${MODULE_ID}Busy`] = true;
+  try {
+    log(`rage shift: ${actor.name} -> ${target} (rage ${rage} -> ${rage - 1})`);
+    const changed = await setForm(actor, target, { "system.advantages.rage.temporary": rage - 1 });
+    if (!changed) return;
+    if (getSetting("announceShift")) {
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<p>${game.i18n.format("WFT.Rage.Announce", {
+          name: actor.name, form: getFormLabel(actor, target), rage: rage - 1
+        })}</p>`
+      });
+    }
+    app.close();
+  } finally {
+    app[`_${MODULE_ID}Busy`] = false;
+  }
+}
 
 async function completeShapeChange(app) {
   const actor = app.actor;

@@ -88,3 +88,15 @@
   gap: 6px;
   margin-top: 8px;
 }
+
+/* Shape Change dialog: spend-Rage option */
+.shapechange-dialog .wft-rage-area {
+  text-align: center;
+}
+
+.shapechange-dialog .wft-rage {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
