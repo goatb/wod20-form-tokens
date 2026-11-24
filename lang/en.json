@@ -43,6 +43,10 @@
   "WFT.Roll.ConfirmTitle": "Change form?",
   "WFT.Roll.ConfirmContent": "<p>{name} has enough successes. Shift into <strong>{form}</strong> now?</p>",
   "WFT.Roll.Announce": "{name} shifts into <strong>{form}</strong>.",
+  "WFT.Roll.ConfirmPartial": "<p>{name} rolled {got} of {need} successes toward {target}. Shift partway into <strong>{form}</strong>?</p>",
+  "WFT.Roll.AnnouncePartial": "{name} shifts partway into <strong>{form}</strong> ({got} of {need} successes toward {target}).",
+  "WFT.Settings.PartialShift.Name": "Partial successes shift partway",
+  "WFT.Settings.PartialShift.Hint": "Each success on a Shape Change roll moves one form toward the target (Homid, Glabro, Crinos, Hispo, Lupus). If off, successes add up across rolls until the full number is reached (the system's default).",
 
   "WFT.Warn.NoGM": "Form Tokens: some tokens could not be updated because you lack permission and no GM is connected.",
   "WFT.Warn.ApplyFailed": "Form Tokens: failed to update some tokens. See the console (F12) for details."

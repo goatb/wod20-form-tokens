@@ -5,7 +5,7 @@
 import {
   MODULE_ID, SOCKET, FORM_KEYS, DEFAULT_SIZES,
   getSetting, log, isShifter, getActiveForm, getFormLabel, resolveFormConfig,
-  buildActorChanges, predictForm, syncAppearance, setForm, onSocketMessage
+  buildActorChanges, predictForm, syncAppearance, setForm, onSocketMessage, shiftDestination
 } from "./core.js";
 import { FormTokensConfig, DefaultSizesConfig } from "./apps.js";
 
@@ -32,6 +32,10 @@ Hooks.once("init", () => {
       ask: "WFT.Settings.RollChangesForm.Ask",
       auto: "WFT.Settings.RollChangesForm.Auto"
     }
+  });
+  reg("partialShift", {
+    name: "WFT.Settings.PartialShift.Name", hint: "WFT.Settings.PartialShift.Hint",
+    type: Boolean, default: true
   });
   reg("announceShift", {
     name: "WFT.Settings.Announce.Name", hint: "WFT.Settings.Announce.Hint",
@@ -184,29 +188,50 @@ async function completeShapeChange(app) {
   const target = o.selectedShape;
   if (!isShifter(actor) || !FORM_KEYS.includes(target)) return;
   if (app[`_${MODULE_ID}Busy`]) return;
-  if (!(Number(o.successesRequired) > 0) || Number(o.numSuccesses) < Number(o.successesRequired)) return;
-  if (getActiveForm(actor) === target) return;
+  if (!(Number(o.successesRequired) > 0)) return;
+
+  const got = Number(o.numSuccesses) || 0;
+  const need = Number(o.successesRequired);
+  const dest = shiftDestination(actor, target, got, need, { partial: getSetting("partialShift") });
+  if (!dest) return;
 
   app[`_${MODULE_ID}Busy`] = true;
   try {
-    const formLabel = getFormLabel(actor, target);
+    const formLabel = getFormLabel(actor, dest.form);
+    const targetLabel = getFormLabel(actor, target);
+    const fmt = { name: actor.name, form: formLabel, target: targetLabel, got, need };
+
     if (getSetting("rollChangesForm") === "ask") {
       const ok = await Dialog.confirm({
         title: game.i18n.localize("WFT.Roll.ConfirmTitle"),
-        content: game.i18n.format("WFT.Roll.ConfirmContent", { name: actor.name, form: formLabel })
+        content: game.i18n.format(dest.full ? "WFT.Roll.ConfirmContent" : "WFT.Roll.ConfirmPartial", fmt)
       });
       if (!ok) return;
     }
 
-    log(`shape change roll succeeded: ${actor.name} -> ${target}`);
-    const changed = await setForm(actor, target);
-    if (changed && getSetting("announceShift")) {
+    log(`shape change roll: ${actor.name} -> ${dest.form} (${got}/${need}, full=${dest.full})`);
+    const changed = await setForm(actor, dest.form);
+    if (!changed) return;
+
+    if (getSetting("announceShift")) {
       await ChatMessage.create({
         speaker: ChatMessage.getSpeaker({ actor }),
-        content: `<p>${game.i18n.format("WFT.Roll.Announce", { name: actor.name, form: formLabel })}</p>`
+        content: `<p>${game.i18n.format(dest.full ? "WFT.Roll.Announce" : "WFT.Roll.AnnouncePartial", fmt)}</p>`
       });
     }
-    if (changed) app.close();
+
+    if (dest.full) {
+      app.close();
+      return;
+    }
+
+    // Partial: the character is now in a new form, so restart the count from there.
+    o.numSuccesses = 0;
+    o.close = false;
+    o.successesRequired = typeof app._calculateSuccessesRequired === "function"
+      ? await app._calculateSuccessesRequired()
+      : Math.abs(FORM_KEYS.indexOf(target) - FORM_KEYS.indexOf(dest.form));
+    app.render();
   } finally {
     app[`_${MODULE_ID}Busy`] = false;
   }

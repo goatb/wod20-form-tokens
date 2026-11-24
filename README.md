@@ -42,6 +42,7 @@ For an **unlinked** token, the config is saved on the base actor, so every unlin
 | Enable form token swapping | on | Master switch. |
 | Change portrait too | on | Also swaps the actor portrait when a form has a portrait set. |
 | Shape Change roll changes form | Change automatically | Choices: Nothing (the system's behaviour), Ask first, or Change automatically. |
+| Partial successes shift partway | on | Each success moves one form toward the target (Homid → Glabro → Crinos → Hispo → Lupus). Homid → Lupus with 1 success lands in Glabro. Off: successes add up across rolls (the system default). |
 | Announce form changes from rolls | on | Posts "X shifts into Crinos" to chat after a successful roll. |
 | Default form sizes | Homid 1×1, Glabro 1×1 @ 1.2, Crinos 2×2, Hispo 2×2, Lupus 1×1 | World defaults. Per-actor values override them. |
 | Debug logging | off | Writes what the module does to the console (F12). |
@@ -52,7 +53,7 @@ For an **unlinked** token, the config is saved on the base actor, so every unlin
 - **Linked actors.** The portrait and prototype-token changes are folded into the same update that changes the form (in `preUpdateActor`). This matters because after every form change, the system's `_onUpdate` sends a second full-actor update from each owner's client. Changing the actor in a separate update could race with that and be reverted. Linked tokens on every scene are then updated, one batch per scene.
 - **Unlinked tokens.** Only that token and its synthetic actor's portrait are changed. The base actor's prototype token is left alone.
 - **Permissions.** Only the client that made the change applies the swap. Any token that user can't edit is handed to the active GM over a socket. The GM checks that the requesting user owns the actor first. If no GM is online, the player gets a warning.
-- **Shape Change roll.** The module re-binds the Roll button in the system's `DialogShapeChange`. It runs the system's own roll, and once `numSuccesses >= successesRequired`, it changes the form the same way the sheet does: it flips the `isactive` flags and sets `isupdated = false` so the system recalculates.
+- **Shape Change roll.** The module re-binds the Roll button in the system's `DialogShapeChange` and runs the system's own roll. Once `numSuccesses >= successesRequired`, it changes into the target form and closes the dialog. With fewer successes (and **Partial successes shift partway** on), it moves one form per success toward the target, then keeps the dialog open with the count reset from the new form, so you can roll again. Changing Breeds that lack a form stop at the furthest form they have (Corax, Homid → Corvid with 1 success: no change; with 2: Crinos). The form change itself works like the sheet: it flips the `isactive` flags and sets `isupdated = false` so the system recalculates.
 
 ## Macro API
 

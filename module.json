@@ -2,10 +2,10 @@
   "id": "wod20-form-tokens",
   "title": "WoD20 Form Tokens",
   "description": "Swaps token image, token size and (optionally) the actor portrait when a Werewolf or Changing Breed changes form in the World of Darkness 20th edition system. Also makes a successful Shape Change roll actually change the character's form.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "url": "https://github.com/goatb/wod20-form-tokens",
   "manifest": "https://github.com/goatb/wod20-form-tokens/releases/latest/download/module.json",
-  "download": "https://github.com/goatb/wod20-form-tokens/releases/download/v0.1.0/wod20-form-tokens.zip",
+  "download": "https://github.com/goatb/wod20-form-tokens/releases/download/v0.1.1/wod20-form-tokens.zip",
   "compatibility": {
     "minimum": "12",
     "verified": "12.331",

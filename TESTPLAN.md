@@ -17,7 +17,10 @@
 | 9 | Empty config for one form | Clear every field in the Hispo row, untick **Use world default sizes**, Save, then switch to Hispo. | Nothing about the token or portrait changes. |
 | 10 | World defaults only | On a fresh Werewolf with no config, switch to Crinos. | The token becomes 2×2 and the image is unchanged. Glabro gives scale 1.2. |
 | 11 | Shape Change roll, auto | Open the sheet's Shape Change roll and pick Crinos from Homid (2 successes needed). Roll until the total reaches 2. | The dialog closes, the sheet shows Crinos, the tokens swap, and chat says "… shifts into Crinos". |
-| 12 | Shape Change roll, not enough | Roll and get fewer successes than needed. | The form doesn't change and the dialog stays open, as before. |
+| 12 | Shape Change roll, partial | From Homid pick Lupus (4 needed). Roll and get 1 success. | The character shifts to **Glabro**, chat says "shifts partway into Glabro (1 of 4 …)", and the dialog stays open with needed successes now 3 and rolled successes 0. |
+| 12b | Partial, zero successes | Roll and get 0 successes. | No change. The dialog stays open. |
+| 12c | Partial off | Turn off **Partial successes shift partway** and repeat 12. | No change on 1 success. Successes add up across rolls until 4. |
+| 12d | Partial, Changing Breed | Corax in Homid, target Corvid (4 needed), 1 success, then a new roll with 2 successes. | 1 success: no change (Corax has no Glabro). 2 successes: Crinos. |
 | 13 | Shape Change roll, ask / off | Set the setting to **Ask** and repeat 11, then set it to **Off** and repeat 11. | Ask: a confirm dialog appears, and No keeps the current form. Off: the system's original behaviour, with no form change. |
 | 14 | Changing Breed | Make a Changing Breed with breed Corax and open Form Tokens. Then switch forms on the sheet. | The dialog shows only Homid, Crinos and Corvid. The tokens swap. |
 | 15 | System form effects | Switch forms on a Werewolf token. | No `form_*` status effects appear (the system has these disabled in 4.2.12) and there are no console errors. |

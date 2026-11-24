@@ -300,6 +300,36 @@ export async function setForm(actor, form) {
   return true;
 }
 
+/**
+ * Where a Shape Change roll lands. Forms are ordered homid → glabro → crinos → hispo → lupus and
+ * each success moves one step toward the target (this matches how the system counts
+ * successesRequired). With fewer successes than needed and `partial` on, the character stops
+ * partway. For Changing Breeds that lack a slot (e.g. Corax has no glabro), it stops at the
+ * furthest form it actually has without passing the reached step.
+ * Returns { form, full } or null when the form doesn't change.
+ */
+export function shiftDestination(actor, target, successes, required, { partial = true } = {}) {
+  const current = getActiveForm(actor);
+  const ci = FORM_KEYS.indexOf(current);
+  const ti = FORM_KEYS.indexOf(target);
+  if (ci < 0 || ti < 0 || ci === ti) return null;
+  const got = Math.max(0, Math.floor(Number(successes) || 0));
+  const need = Number(required) > 0 ? Number(required) : Math.abs(ti - ci);
+
+  if (got >= need) return { form: target, full: true };
+  if (!partial || got === 0) return null;
+
+  const dir = Math.sign(ti - ci);
+  const reached = ci + dir * Math.min(got, Math.abs(ti - ci));
+  const available = new Set(getAvailableForms(actor).map((f) => f.key));
+  for (let i = reached; i !== ci; i -= dir) {
+    if (available.has(FORM_KEYS[i]) && actor.system?.shapes?.[FORM_KEYS[i]]) {
+      return { form: FORM_KEYS[i], full: false };
+    }
+  }
+  return null;
+}
+
 /** Predict the active form after `changes` are applied (used in preUpdateActor). */
 export function predictForm(actor, changes) {
   for (const k of FORM_KEYS) {
